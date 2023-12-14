@@ -1,0 +1,120 @@
+module Dmem_tb;
+
+  // Inputs
+  reg [12:0] mem_addr;
+  reg clk;
+  reg rw;
+  reg reset;
+  reg [31:0] data_in;
+
+  // Outputs
+  wire [31:0] dmem;
+  
+  Top_level_Dmem uut (
+    .mem_addr(mem_addr),
+    .clk(clk),
+	 .rw(rw),
+	 .reset(reset),
+	 .data_in(data_in),			
+    .dmem(dmem)
+  );
+  
+  initial begin
+  clk = 0;
+  while(1) begin
+    #5 clk = ~clk; // Toggle the clock every 5 time units
+	end
+  end
+  
+  initial begin
+    // Initialize inputs
+	 mem_addr[9:0] = 0;
+	 mem_addr[12:10] = 0;
+	 rw = 1;
+	 reset = 0;
+    data_in = 200;
+	 #30;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 1;
+    rw = 1;
+    reset = 0;
+    data_in = 300;
+	 #30;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 2;
+    rw = 1;
+    reset = 0;
+    data_in = 400;
+	 #30;
+	 
+    mem_addr[9:0] = 0;
+    mem_addr[12:10] = 3;
+    rw = 1;
+    reset = 0;
+    data_in = 500;
+	 #30;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 4;
+    rw = 1;
+    reset = 0;
+    data_in = 600;
+	 #30;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 5;
+    rw = 1;
+    reset = 0;
+    data_in = 700;
+	 #50;
+	 
+	 mem_addr[9:0] = 0;
+	 mem_addr[12:10] = 0;
+    rw = 0;
+    reset = 0;
+    //data_in = 200;
+	 #100;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 1;
+    rw = 0;
+    reset = 0;
+   // data_in = 300;
+	 #100;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 2;
+    rw = 0;
+    reset = 0;
+   // data_in = 400;
+	 #100;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 3;
+    rw = 0;
+    reset = 0;
+    //data_in = 500;
+	 #100;
+	 
+	 mem_addr[9:0] = 0;
+    mem_addr[12:10] = 4;
+    rw = 0;
+    reset = 0;
+    //data_in = 600;
+	 #100;
+	 
+    mem_addr[9:0] = 0;
+    mem_addr[12:10] = 5;
+    rw = 0;
+    reset = 0;
+    //data_in = 700;
+	 #100;
+	 
+	 $finish;
+end
+  
+  
+ endmodule
+
