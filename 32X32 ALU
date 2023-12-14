@@ -1,0 +1,34 @@
+module Alu(
+    input [31:0] a,
+    input [31:0] b,
+    input [3:0] ALUOp,
+    input clk,                         	 // 4-bit control signal for operation selection
+    output reg [31:0] Result,  // 32-bit ALU result
+    output reg Zero        // Zero flag
+);
+/*wire [31:0] a;
+wire [31:0] b;
+*/
+always @(posedge clk)
+begin
+    case(ALUOp)
+        4'b0001: Result = a + b;       // Addition
+        4'b0010: Result = a - b;       // Subtraction
+        4'b0011: Result = a & b;       // Bitwise AND
+        4'b0100: Result = a | b;       // Bitwise OR
+        4'b0101: Result = a ^ b;
+		  4'b0110: Result = a >> b;
+		  4'b0111: Result = a << b;                               // Bitwise XOR
+        default: Result = 32'h0;      // Default operation
+    endcase
+
+    if(Result == 32'h0) // Check for zero
+        Zero = 1;
+    else
+        Zero = 0;
+end
+/*
+wire [31:0] pc;
+Reg_Rom   M0(pc[31:0], a[31:0], b[31:0]);
+*/
+endmodule
