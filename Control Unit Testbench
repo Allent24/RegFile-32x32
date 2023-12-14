@@ -1,0 +1,71 @@
+module tb_Control_Unit;
+
+  reg [31:0] Iw;
+  reg clk, BrEq, BrLT;
+  wire Wen, ImmSel, Bsel, BrUn, Asel, PcSel;
+  wire [3:0] AluOp;
+
+  // Instantiate the Control_Unit module
+  Control_Unit uut (
+    .Iw(Iw),
+    .clk(clk),
+    .BrEq(BrEq),
+    .BrLT(BrLT),
+    .Wen(Wen),
+    .ImmSel(ImmSel),
+    .Bsel(Bsel),
+    .BrUn(BrUn),
+    .Asel(Asel),
+    .PcSel(PcSel),
+    .AluOp(AluOp)
+  );
+initial begin
+  clk = 0;
+  while(1) begin
+    #5 clk = ~clk; // Toggle the clock every 5 time units
+	end
+  end
+  
+  initial begin
+  
+   Iw[6:0] = 7'b1100111;
+	Iw[14:12]= 3'b000;
+	Iw[31:25] = 7'b0000000;
+	Iw[19:15] = 0;
+	Iw[24:20] = 0;
+	Iw[11:7]= 0;
+	#10;
+	Iw[6:0] = 7'b0000011;
+	Iw[14:12]= 3'b010;
+	Iw[31:25] = 7'b0000000;
+	Iw[19:15] = 0;
+	Iw[24:20] = 0;
+	Iw[11:7]= 0;
+	#10;
+	Iw[6:0] = 7'b0100011;
+	Iw[14:12]= 3'b001;
+	Iw[31:25] = 7'b0000000;
+	Iw[19:15] = 0;
+	Iw[24:20] = 0;
+	Iw[11:7]= 0;
+	#10;
+	Iw[6:0] = 7'b0010011;
+	Iw[14:12]= 3'b111;
+	Iw[31:25] = 7'b0000000;
+	Iw[19:15] = 0;
+	Iw[24:20] = 0;
+	Iw[11:7]= 0;
+	#10;
+	Iw[6:0] = 7'b0110011;
+	Iw[14:12]= 3'b000;
+	Iw[31:25] = 7'b0100000;
+	Iw[19:15] = 0;
+	Iw[24:20] = 0;
+	Iw[11:7]= 0;
+	#10;
+
+    $finish; // Terminate the simulation
+  end
+
+endmodule
+
