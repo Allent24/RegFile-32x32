@@ -1,0 +1,454 @@
+module  Control_Unit(         
+	input [31:0] Iw,
+	input clk, BrEq, BrLT,
+	output reg Wen, ImmSel, Bsel, BrUn, Asel, PcSel, MemRw, WBSel
+	output reg [3:0] AluOp
+	
+);
+
+wire[6:0] opcode;
+
+wire[2:0] funct3;
+
+wire[6:0] funct7;
+
+wire [4:0] rs1, rs2, rd;
+
+wire [31:0] rs3, rs4;
+
+wire BrUn1;
+
+
+
+assign opcode[6:0] = Iw[6:0];
+assign funct3[2:0] = Iw[14:12];
+assign funct7[6:0] = Iw[31:25];
+assign rs1[4:0]    = Iw[19:15];
+assign rs2[4:0]    = Iw[24:20];
+assign rd[4:0]     = Iw[11:7];
+
+
+
+
+always@(posedge clk) begin
+if(opcode == 7'b1100111) begin
+//BEQ
+if(funct3 == 3'b000) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 1;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+if(BrEq == 1) begin
+PcSel = 1;
+end
+end
+//BNE
+else if(funct3 == 3'b001) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 1;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+if(BrLT == 0 || BrEq == 0) begin
+PcSel = 1;
+end
+end
+//BLT
+else if(funct3 == 3'b100) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 1;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+if(BrLT == 1) begin
+PcSel = 1;
+end
+end
+//BGE
+else if(funct3 == 3'b101) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 1;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+if(BrLT == 0) begin
+PcSel = 1;
+end
+end
+//BLTU
+else if(funct3 == 3'b110) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 1;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+if(BrLT == 1 && BrEq == 0) begin
+PcSel = 1;
+end
+end
+//BGEU
+else if(funct3 == 3'b111) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 1;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+if(BrLT == 1 && BrEq == 0) begin
+PcSel = 1;
+end
+end
+end
+
+
+else if (opcode == 7'b0000011) begin
+//LB
+if (funct3 == 3'b000) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+end
+//LH
+else if (funct3 == 3'b001) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+end
+//LW
+else if (funct3 == 3'b010) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+end
+//LBU
+else if (funct3 == 3'b100) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+end
+//LHU
+else if (funct3 == 3'b101) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 1;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 0;
+WBsel = 0;
+end
+end
+
+
+
+else if (opcode == 7'b0100011) begin
+//SB
+if (funct3 == 3'b000) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 0;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 1;
+WBsel = 0;
+end
+//SH
+else if (funct3 == 3'b001) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 0;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 1;
+WBsel = 0;
+end
+//SW
+else if (funct3 == 3'b010) begin
+Wen = 0;
+AluOp = 1;
+ImmSel = 0;
+Bsel = 1;
+BrUn = 0;
+Asel = 0;
+PcSel = 0;
+MemRW = 1;
+WBsel = 0;
+end
+end
+
+
+   else if (opcode == 7'b0010011) begin
+//ADDI
+	if (funct3 == 3'b000) begin
+	Wen = 0;
+	AluOp = 1;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+   WBsel = 1;
+	end
+//SLTI
+   else if (funct3 == 3'b010) begin
+	Wen = 0;
+	AluOp = 2;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+   WBsel = 1;
+	end
+//SLTIU
+   else if (funct3 == 3'b011) begin
+	Wen = 0;
+	AluOp = 7;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+   WBsel = 1; 
+	end
+//XORI
+	else if (funct3 == 3'b100) begin
+	Wen = 1;
+	AluOp = 5;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+   WBsel = 1;
+	end
+//ORI
+	else if (funct3 == 3'b110) begin
+	Wen = 1;
+	AluOp = 4;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+   WBsel = 1;
+	end
+//ANDI
+	else if (funct3 == 3'b111) begin
+	Wen = 1;
+	AluOp = 3;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+	WBsel = 1;
+	end
+//SLLI	
+	else if (funct3 == 3'b001) begin
+	Wen = 1;
+	AluOp = 7;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+	WBsel = 1;
+	end
+//SRLI	
+	else if (funct3 == 3'b101 && funct7 == 7'b0000000) begin
+	Wen = 1;
+	AluOp = 6;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+	WBsel = 1;
+	end
+//SRAI
+   else if (funct3 == 3'b100 && funct7 == 7'b0100000) begin
+	Wen = 1;
+	AluOp = 6;
+	ImmSel = 1;
+	Bsel = 1;
+	BrUn = 0;
+	Asel = 0;
+	PcSel = 0;
+	WBsel = 1;
+	end
+	end
+	
+	
+	
+else if (opcode == 7'b0110011) begin
+//ADD
+	if (funct3 == 3'b000 && funct7 == 7'b0000000) begin
+		Wen = 0;
+		AluOp = 1;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//SUB
+	else if(funct3 == 3'b000 && funct7 == 7'b0100000) begin
+		Wen = 0;
+		AluOp = 2;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//SLL
+   else if(funct3 == 3'b001) begin
+		Wen = 0;
+		AluOp = 7;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//SLT
+   else if(funct3 == 3'b010) begin
+		Wen = 0;
+		AluOp = 7;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//SLTU
+    else if(funct3 == 3'b011) begin
+		Wen = 0;
+		AluOp = 7;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//XOR
+	else if(funct3 == 3'b100) begin
+		Wen = 0;
+		AluOp = 5;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//SRL
+   else if(funct3 == 3'b101 && funct7 == 7'b0000000) begin
+		Wen = 0;
+		AluOp = 6;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//SRA
+   else if(funct3 == 3'b101 && funct7 == 7'b0100000) begin
+		Wen = 0;
+		AluOp = 6;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+	end
+//OR
+    else if(funct3 == 3'b110) begin
+		Wen = 0;
+		AluOp = 4;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+		end
+//AND
+    else if(funct3 == 3'b111) begin
+		Wen = 0;
+		AluOp = 3;
+		ImmSel = 0;
+		Bsel = 0;
+		BrUn = 0;
+		Asel = 0;
+		PcSel = 0;
+		WBsel = 1;
+end
+end
+end
+
+Branch_compare M0 (rs3[31:0], rs4[31:0], BrUn1, BrLT, BrEq);
+
+endmodule
+
