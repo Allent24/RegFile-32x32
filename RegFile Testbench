@@ -1,0 +1,71 @@
+module Comp_1_tb;
+
+  // Inputs
+  reg [31:0] d;
+  reg [4:0] rna, rnb, wn;
+  reg we, clk, clrn;
+
+  // Outputs
+  wire [31:0] qa, qb;
+
+  // Instantiate the module under test
+  Comp_1 uut (
+    .d(d),
+    .rna(rna),
+    .rnb(rnb),
+    .wn(wn),
+    .we(we),
+    .clk(clk),
+    .clrn(clrn),
+    .qa(qa),
+    .qb(qb)
+  );
+
+  // Clock generation
+  initial begin
+  clk = 0;
+  while(1) begin
+    #5 clk = ~clk; // Toggle the clock every 5 time units
+	end
+  end
+
+  // Initializations
+  initial begin
+    clrn = 0;
+    we = 0;
+    rna = 0;
+    rnb = 8;
+    wn = 0;
+    d = 0;
+
+    // Reset the regfile
+    clrn = 1;
+    #10 clrn = 0;
+
+    // Write some data to registers
+    we = 1;
+    repeat (5) begin
+      wn = wn + 2;
+      d = d + 1;
+      #10;
+    end
+    we = 0;
+
+    // Read data from registers
+    repeat (5) begin
+      rna = rna + 1;
+      rnb = rnb + 1;
+      #10;
+    end
+
+    // Finish the simulation
+    $finish;
+  end
+
+  // Monitor signals
+  always @(posedge clk) begin
+    $display("Time=%0t: d=%d rna=%h rnb=%h wn=%h we=%b clrn=%b qa=%d qb=%d",
+             $time, d, rna, rnb, wn, we, clrn, qa, qb);
+  end
+
+endmodule
