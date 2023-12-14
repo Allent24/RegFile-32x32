@@ -1,0 +1,52 @@
+module  Processor( 
+input clk,
+input power,
+input [31:0] Iw,
+output [31:0] P_out
+);
+
+    reg [31:0] a, b, Data_in, c;
+    wire Zero, reset, we, e;
+    wire [3:0] AluOp;
+    wire [31:0] qa, qb, dmem, result, data_in, addr, out;
+	 reg [31:0] d;
+    wire [4:0] rd, rs1, rs2;
+    wire Bsel, Asel, Wen, Immsel, BrUn, PCSel, MemRW, WBsel,rw;
+	 wire [31:0] imm_out;
+	 wire [11:0] imm_in;
+	 wire BrEq, BrLt;
+	 wire [12:0] mem_addr;
+	 
+	 
+	 
+
+    always @(posedge clk) begin
+        if (power) begin
+           b = Bsel?imm_out:qb;
+			  d = WBsel?result:dmem;
+			  a = Asel?data_in:qa;
+			  c = PCSel?result:addr+4;
+				
+        end
+    end 
+
+Alu            M0(a[31:0], b[31:0], AluOp[3:0], clk, result, Zero);
+
+Comp_1         M1(rs1[4:0], rs2[4:0], d, rd[4:0], Wen, clk, clrn, qa[31:0], qb[31:0]);
+
+Comp_rom_imem  M2(power, clk, Iw, data_in, rw, reset, rs1, rs2, rd, out[31:0]);
+
+Top_level_Dmem M3(mem_addr, clk, MemRW, reset, result, dmem);
+
+Branch_compare M4(qa, qb, BrUn, BrLt, BrEq);
+
+Control_Unit   M5(out[31:0], clk, BrEq, BrLt, Wen, Immsel, Bsel, BrUn, Asel, PCSel, MemRW, WBsel, AluOp[3:0]);
+
+Imm_sign       M6(Immsel, out[11:0], imm_out);
+
+Pc             M7(c, addr);
+
+assign P_out[31:0] = qa;
+
+
+endmodule
