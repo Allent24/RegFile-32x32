@@ -1,0 +1,53 @@
+module Alu_tb;
+
+  // Inputs
+  reg [31:0] a, b;
+  reg [3:0] ALUOp;
+  reg clk;
+
+  // Outputs
+  wire [31:0] Result;
+  wire Zero;
+  
+  Alu uut (
+    .a(a),
+    .b(b),
+    .clk(clk),
+    .ALUOp(ALUOp),
+    .Zero(Zero),
+	 .Result(Result)
+  );
+  
+  initial begin
+  clk = 0;
+  while(1) begin
+    #5 clk = ~clk; // Toggle the clock every 5 time units
+	end
+  end
+  
+  initial begin
+    a = 5;
+    b = 4;
+    ALUOp = 0;
+
+	 
+	 repeat (7) begin
+      /*a = a + 1;
+      b = b + 2;*/
+		ALUOp = ALUOp + 1;
+      #10;
+    end
+	 
+    /*repeat (5) begin
+      ALUOp = ALUOp + 1;
+      #5;
+    end*/
+	 $finish;
+	 end
+	 
+	 always @(posedge clk) begin
+    $display("Time=%0t: a=%d b=%d ALUOp=%d Zero=%d Result=%d ",
+             $time, a, b, ALUOp, Zero, Result);
+  end
+  
+	 endmodule 
