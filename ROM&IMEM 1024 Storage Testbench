@@ -1,0 +1,45 @@
+module Comp_rom_tb;
+    reg e;            // Enable signal
+    reg clk;          // Clock
+    reg [31:0] addr;  // Address input
+    wire [31:0] out;  // Data output
+
+    // Instantiate the module
+    Comp_rom_imem dut (
+        .e(e),
+        .clk(clk),
+        .addr(addr),
+        .out(out)
+    );
+
+    // Clock generation
+    always begin
+        #5 clk = ~clk;
+    end
+
+    initial begin
+        clk = 0; // Initialize the clock
+        e = 1;   // Enable signal
+
+        // Stimulus
+        addr = 12; // Test with address 12
+        #10;     // Wait for a few clock cycles
+        addr = 8; // Test with address 8
+        #10;     // Wait for a few clock cycles
+        addr = 4; // Test with address 4
+        #10;     // Wait for a few clock cycles
+        addr = 0;
+        #10;
+
+        // Add more test cases as needed
+
+        // Terminate simulation
+        $finish;
+    end
+
+    // Display the output using $display
+    always @(posedge clk) begin
+         $display("Time=%0t: addr=%d out=%d",
+             $time, addr, out);
+    end
+endmodule
