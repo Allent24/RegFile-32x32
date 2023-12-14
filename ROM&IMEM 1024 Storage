@@ -1,0 +1,22 @@
+module Comp_rom_imem (
+    input e,               // Enable signal
+    input clk,             // Clock
+    input [31:0] addr,    // Address input
+    output reg [31:0] out  // Data output
+);
+
+ integer i;
+ 
+    reg [7:0] storage [1023:0];  // Byte address
+
+    always @(posedge clk) begin
+        if (e) begin
+            // ROM contents
+            for (i = 0; i < 16; i = i + 1) begin
+                storage[i] = i + 10;
+            end
+            out = {storage[addr + 3], storage[addr + 2], storage[addr + 1], storage[addr]};
+        end
+    end
+
+endmodule
