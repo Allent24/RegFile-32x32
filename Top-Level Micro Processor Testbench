@@ -1,0 +1,78 @@
+module Processor_tb;
+
+    reg clk;
+    reg power;
+    reg [31:0]Iw;
+	 wire [31:0]P_out;
+	 wire [4:0] rs1p;
+	 wire [4:0] rs2p;
+	 wire [4:0] rdp;
+	 wire [31:0] Imm_OUT;
+	 wire [6:0] OPcode;
+	 wire [3:0] aluop;
+	 wire BrEQ, BrLT, WeN, ImmseL, BseL, BrUN, AseL, MemRw, WBseL;
+    // Instantiate the Processor module
+    Processor uut (
+        .clk(clk),
+        .power(power),
+		  .Iw(Iw),
+		  .OPcode(OPcode),
+		  .aluop(aluop),
+		  .rs1p(rs1p),
+		  .rs2p(rs2p),
+		  .rdp(rdp),
+		  .Imm_OUT(Imm_OUT),
+		  .P_out(P_out),
+		  .BrEQ(BrEQ),
+		  .BrLT(BrLT),
+		  .WeN(WeN),
+		  .ImmseL(ImmseL),
+		  .BseL(BseL),
+		  .BrUN(BrUN),
+		  .AseL(AseL),
+		  .MemRw(MemRw),
+		  .WBseL(WBseL)
+    );
+
+    // Clock generation
+    
+  initial begin
+  clk = 0;
+  while(1) begin
+    #5 clk = ~clk; // Toggle the clock every 5 time units
+	end
+  end
+
+    // Stimulus generation
+    initial begin
+        // Initialize inputs
+        power = 1;
+		  Iw = 0;
+		  #100
+		  
+	
+		  repeat (9) begin
+    Iw = Iw + 4;
+      #100;
+    end
+		  
+		  
+		  #100;
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  $finish;
+
+		  
+		  
+		  
+		  
+		  
+		  
+		  end
+		  endmodule
