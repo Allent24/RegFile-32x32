@@ -2,16 +2,23 @@ module  Processor(
 input clk,
 input power,
 input [31:0] Iw,
-output [31:0] P_out
+output [4:0] rs1p, rs2p, rdp,
+output [3:0] aluop,
+output [6:0] OPcode,
+output [31:0] Imm_OUT,
+output [31:0] P_out,
+output BrEQ, BrLT, WeN, ImmseL, BseL, BrUN, AseL, MemRw, WBseL
+
 );
 
     reg [31:0] a, b, Data_in, c;
     wire Zero, reset, we, e;
     wire [3:0] AluOp;
+	 wire [31:0] pcout;
     wire [31:0] qa, qb, dmem, result, data_in, addr, out;
 	 reg [31:0] d;
     wire [4:0] rd, rs1, rs2;
-    wire Bsel, Asel, Wen, Immsel, BrUn, PCSel, MemRW, WBsel,rw;
+    wire Bsel, Asel, Wen, Immsel, BrUn, MemRW, PCSel, WBsel,rw;
 	 wire [31:0] imm_out;
 	 wire [11:0] imm_in;
 	 wire BrEq, BrLt;
@@ -25,7 +32,7 @@ output [31:0] P_out
            b = Bsel?imm_out:qb;
 			  d = WBsel?result:dmem;
 			  a = Asel?data_in:qa;
-			  c = PCSel?result:addr+4;
+			  //c = PCSel?result:addr+4;
 				
         end
     end 
@@ -42,11 +49,27 @@ Branch_compare M4(qa, qb, BrUn, BrLt, BrEq);
 
 Control_Unit   M5(out[31:0], clk, BrEq, BrLt, Wen, Immsel, Bsel, BrUn, Asel, PCSel, MemRW, WBsel, AluOp[3:0]);
 
-Imm_sign       M6(Immsel, out[11:0], imm_out);
+Imm_sign       M6(Immsel, clk, out[31:20], imm_out[31:0]);
 
-Pc             M7(c, addr);
+//Pc             M7(c, addr);
 
-assign P_out[31:0] = qa;
+assign P_out[31:0] = d;
+assign rs1p = rs1;
+assign rs2p = rs2;
+assign rdp = rd;
+assign OPcode = out[6:0];
+assign aluop = AluOp;
+assign Imm_OUT[31:0] = imm_out[31:0];
+assign BrEQ = BrEq;
+assign BrLT = BrLt;
+assign WeN =  Wen;
+assign ImmseL = Immsel;
+assign BseL = Bsel;
+assign BrUN = BrUn;
+assign AseL = Asel;
+assign MemRw = MemRW;
+assign WBseL = WBsel;
+
 
 
 endmodule
